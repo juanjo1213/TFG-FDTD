@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CudaCompile Include="..\Code\P-fd3d_1_1.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\jojus\Desktop\TFG\Projects\Cuda\Prueba-fd3d_1_1\Code\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{DE585181-E918-371C-A891-B11AC5D15476}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

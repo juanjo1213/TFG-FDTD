@@ -1,0 +1,10 @@
+﻿  Compiling CUDA source file ..\Code\fd3d_1_1.cu...
+  
+  C:\Users\jojus\Desktop\TFG\Projects\Cuda\fd3d_1_1\Build>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin\nvcc.exe" -gencode=arch=compute_52,code=\"sm_52,compute_52\" --use-local-env -ccbin "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.31.31103\bin\HostX64\x64" -x cu    -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\include"     --keep-dir x64\Debug  -maxrregcount=0  --machine 64 --compile -cudart static -std=c++14 -Xcompiler="/EHsc -Zi -Ob0" -g  -D_WINDOWS -D"CMAKE_INTDIR=\"Debug\"" -D_MBCS -D"CMAKE_INTDIR=\"Debug\"" -Xcompiler "/EHsc /W3 /nologo /Od /Fdfd3d_1_1.dir\Debug\vc143.pdb /FS /Zi /RTC1 /MDd /GR" -o fd3d_1_1.dir\Debug\fd3d_1_1.obj "C:\Users\jojus\Desktop\TFG\Projects\Cuda\fd3d_1_1\Code\fd3d_1_1.cu" 
+C:\Users\jojus\Desktop\TFG\Projects\Cuda\fd3d_1_1\Code\fd3d_1_1.cu(26): warning #177-D: variable "bloques" was declared but never referenced
+  
+C:\Users\jojus\Desktop\TFG\Projects\Cuda\fd3d_1_1\Code\fd3d_1_1.cu(109): warning #177-D: variable "nsteps" was declared but never referenced
+  
+  fd3d_1_1.cu
+     Creating library C:/Users/jojus/Desktop/TFG/Projects/Cuda/fd3d_1_1/Build/Debug/fd3d_1_1.lib and object C:/Users/jojus/Desktop/TFG/Projects/Cuda/fd3d_1_1/Build/Debug/fd3d_1_1.exp
+  fd3d_1_1.vcxproj -> C:\Users\jojus\Desktop\TFG\Projects\Cuda\fd3d_1_1\Build\Debug\fd3d_1_1.exe

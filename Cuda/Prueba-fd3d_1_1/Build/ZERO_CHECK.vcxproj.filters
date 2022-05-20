@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\jojus\Desktop\TFG\Projects\Cuda\Prueba-fd3d_1_1\Build\CMakeFiles\e970726388b490a3650ce3f7760d74c2\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{78FB11D1-EA5A-3FA2-AEAF-DE7FAE647F9A}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

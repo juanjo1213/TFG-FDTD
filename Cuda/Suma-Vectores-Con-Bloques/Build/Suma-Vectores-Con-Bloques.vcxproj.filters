@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CudaCompile Include="..\Code\Suma-Vectores-Con-Bloques.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\jojus\Desktop\TFG\Projects\Cuda\Suma-Vectores-Con-Bloques\Code\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{2B1458F5-0004-31B8-8A0B-059B7B09ED69}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
