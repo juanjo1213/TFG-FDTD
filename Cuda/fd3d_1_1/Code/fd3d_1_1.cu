@@ -52,7 +52,7 @@ int main(int argc, char** argv)
 	cudaMemcpy(dev_e, hst_e, dim * sizeof(float), cudaMemcpyHostToDevice);
 	cudaMemcpy(dev_h, hst_h, dim * sizeof(float), cudaMemcpyHostToDevice);
 
-	for (int i = 1;i<1001;i++)
+	for (int i = 1;i<101;i++)
 	{
 		//Llamo a la función para ejecutar el método con un único bloque de 200 hilos
 		fdtd << <1, dim >> > (dev_e, dev_h, dim, i);

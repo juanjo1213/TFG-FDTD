@@ -73,7 +73,7 @@ int main(int argc, char** argv)
 	float spread = 12.0;
 	float a;
 	//Declaro el número de pasos
-	int nsteps = 1000;
+	int nsteps = 100;
 
 	//Realizo el método
 	for (int i = 1;i < (nsteps + 1);i++)
