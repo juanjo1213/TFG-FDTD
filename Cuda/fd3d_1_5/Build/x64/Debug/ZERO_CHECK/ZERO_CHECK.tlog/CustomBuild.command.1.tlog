@@ -1,0 +1,10 @@
+^C:\USERS\JOJUS\DESKTOP\TFG\PROJECTS\CUDA\FD3D_1_5\BUILD\CMAKEFILES\6D0E4CB2B5E438BCA8CE999A51745699\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/jojus/Desktop/TFG/Projects/Cuda/fd3d_1_5/Code -BC:/Users/jojus/Desktop/TFG/Projects/Cuda/fd3d_1_5/Build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/jojus/Desktop/TFG/Projects/Cuda/fd3d_1_5/Build/fd3d_1_5.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

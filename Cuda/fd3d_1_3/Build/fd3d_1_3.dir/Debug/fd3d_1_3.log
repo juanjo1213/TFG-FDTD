@@ -1,0 +1,7 @@
+﻿  Compiling CUDA source file ..\Code\fd3d_1_3.cu...
+  
+  C:\Users\jojus\Desktop\TFG\Projects\Cuda\fd3d_1_3\Build>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\bin\nvcc.exe" -gencode=arch=compute_52,code=\"sm_52,compute_52\" --use-local-env -ccbin "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.31.31103\bin\HostX64\x64" -x cu    -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.6\include"     --keep-dir x64\Debug  -maxrregcount=0  --machine 64 --compile -cudart static -std=c++14 -Xcompiler="/EHsc -Zi -Ob0" -g  -D_WINDOWS -D"CMAKE_INTDIR=\"Debug\"" -D_MBCS -D"CMAKE_INTDIR=\"Debug\"" -Xcompiler "/EHsc /W3 /nologo /Od /Fdfd3d_1_3.dir\Debug\vc143.pdb /FS /Zi /RTC1 /MDd /GR" -o fd3d_1_3.dir\Debug\fd3d_1_3.obj "C:\Users\jojus\Desktop\TFG\Projects\Cuda\fd3d_1_3\Code\fd3d_1_3.cu" 
+  fd3d_1_3.cu
+C:\Users\jojus\Desktop\TFG\Projects\Cuda\fd3d_1_3\Code\fd3d_1_3.cu(105): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\jojus\Desktop\TFG\Projects\Cuda\fd3d_1_3\Code\fd3d_1_3.cu(123): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  fd3d_1_3.vcxproj -> C:\Users\jojus\Desktop\TFG\Projects\Cuda\fd3d_1_3\Build\Debug\fd3d_1_3.exe
