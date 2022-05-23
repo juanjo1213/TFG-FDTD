@@ -1,0 +1,10 @@
+^C:\USERS\JOJUS\DESKTOP\TFG\PROJECTS\CUDA\TRASPUESTA MATRIZ\CODE\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SC:/Users/jojus/Desktop/TFG/Projects/Cuda/Traspuesta matriz/Code" "-BC:/Users/jojus/Desktop/TFG/Projects/Cuda/Traspuesta matriz/Build" --check-stamp-file "C:/Users/jojus/Desktop/TFG/Projects/Cuda/Traspuesta matriz/Build/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
