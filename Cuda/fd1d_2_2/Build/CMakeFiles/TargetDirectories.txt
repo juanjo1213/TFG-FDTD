@@ -1,3 +1,0 @@
-C:/Users/jojus/Desktop/TFG/Projects/Cuda/fd1d_2_2/Build/CMakeFiles/fd1d_2_2.dir
-C:/Users/jojus/Desktop/TFG/Projects/Cuda/fd1d_2_2/Build/CMakeFiles/ALL_BUILD.dir
-C:/Users/jojus/Desktop/TFG/Projects/Cuda/fd1d_2_2/Build/CMakeFiles/ZERO_CHECK.dir

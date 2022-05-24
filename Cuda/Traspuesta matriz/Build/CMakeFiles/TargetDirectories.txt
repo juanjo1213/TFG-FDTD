@@ -1,3 +1,0 @@
-C:/Users/jojus/Desktop/TFG/Projects/Cuda/Traspuesta matriz/Build/CMakeFiles/Traspuesta.dir
-C:/Users/jojus/Desktop/TFG/Projects/Cuda/Traspuesta matriz/Build/CMakeFiles/ALL_BUILD.dir
-C:/Users/jojus/Desktop/TFG/Projects/Cuda/Traspuesta matriz/Build/CMakeFiles/ZERO_CHECK.dir
