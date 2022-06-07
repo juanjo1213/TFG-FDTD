@@ -5,3 +5,5 @@ project(fd2d LANGUAGES CXX CUDA)
 add_executable(fd2d fd2d.cu)
 
 add_executable(hostfd2d hostfd2d.cu)
+
+add_executable(fd2d_simple fd2d_simple.cu)
