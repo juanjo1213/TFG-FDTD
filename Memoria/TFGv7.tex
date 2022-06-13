@@ -1,0 +1,246 @@
+\documentclass[11pt,a4paper,twoside,pdf]{article}
+
+% Paquetes (añade otros si los necesitas):
+\usepackage{latexsym}
+\usepackage[utf8x]{inputenc}
+\usepackage{soul}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{marvosym}
+\usepackage{epsfig}
+\usepackage{graphics}
+\usepackage{amsfonts}
+\usepackage{xspace}
+\usepackage{color}
+\usepackage{booktabs}
+\usepackage{xtab}
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=blue,citecolor=blue]{hyperref}
+\numberwithin{equation}{section}
+
+% Fuente: palatino
+\usepackage[sc]{mathpazo}
+\linespread{1.05}
+
+% TFG en inglés:
+%\usepackage[english]{babel} 
+%\addto\captionsenglish{\renewcommand{\chaptername}{}}
+
+% TFG en español:
+\usepackage[spanish,es-nodecimaldot,es-tabla,es-lcroman,es-nosectiondot,
+            es-noindentfirst]{babel}
+\renewcommand\spanishchaptername{}
+
+% Formato de la página:
+\usepackage{fancyhdr}
+\usepackage[top=2.88cm,bottom=2.97cm,left=2.95cm,right=2.95cm]{geometry}
+\setlength{\parskip}{0.1cm}
+
+% Pon aquí tus definiciones:
+
+\newcommand{\dis}{\displaystyle}
+\sodef\an{}{.2em}{1em plus1em}{2em plus.1em minus.1em}
+
+\begin{document}
+
+% Portada %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagestyle{empty}
+
+
+\noindent
+\begin{tabular}{r}
+\includegraphics[width=8.8cm]{escudoUGRmonocromo.png} \\[-1.8ex]
+\hspace{31mm}\vspace{-8mm}
+\begin{tabular}{c}
+\hline\\[-1ex]\hskip-2mm
+{\bf Facultad de Ciencias}\hspace{18mm}
+\end{tabular}
+\end{tabular}
+
+{\large
+\vspace{30mm}
+\hspace{25mm}
+\begin{tabular}{l}
+\an{GRADO EN F\'ISICA}
+\end{tabular}
+
+\vspace{45mm}
+\hspace{25mm}
+\begin{tabular}{l}
+\an{TRABAJO FIN DE GRADO}
+\\[1.5ex]
+\an{\LARGE\bf T\'ITULO DEL TRABAJO}
+\end{tabular}
+
+\vfill
+\hspace{25mm}
+\begin{tabular}{l}
+Presentado por:
+\\
+{\bf D./D$^{\rm a}$. Nombre y Apellidos}
+\\[3ex]
+Curso Académico 20\_\_/20\_\_
+\end{tabular}
+}
+
+
+\newpage
+
+\begin{center}
+
+{\bf Resumen}
+\bigskip
+
+\begin{minipage}{0.8\linewidth}
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+\end{minipage}
+
+\vfill
+
+{\bf Abstract} 
+\bigskip
+
+\begin{minipage}{0.8\linewidth}
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla 
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla
+\end{minipage}
+
+\vfill
+
+\end{center}
+
+% Indice %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+\tableofcontents
+
+% Texto %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+\pagestyle{fancy}
+\fancyhead[RO,LE]{\leftmark}
+\fancyhead[LO,RE]{\thepage}
+\fancyfoot{}
+
+\section{Introducción}
+
+Ésta es la plantilla para escribir en \LaTeX\ los TFG de Física. En ella basta rellenar los nombres de la portada y las diferentes secciones. El índice se produce automáticamente. No debe alterarse el formato. Si el trabajo se escribe en inglés conviene descomentar en el encabezamiento del fichero {\sf tfg.tex} las líneas que aparecen bajo:
+\begin{verbatim}
+% TFG en inglés:
+%\usepackage[english]{babel} 
+%\addto\captionsenglish{\renewcommand{\chaptername}{}}
+\end{verbatim}
+y comentar las que aparecen bajo:
+\begin{verbatim}
+% TFG en español:
+\usepackage[spanish,es-nodecimaldot,es-tabla,es-lcroman,es-nosectiondot,
+            es-noindentfirst]{babel}
+\renewcommand\spanishchaptername{}
+\end{verbatim}
+
+Las figuras y las tablas son objetos flotantes, pero si se desea puede forzarse su localización en la página, como se ha hecho con la siguiente figura:
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=8cm]{fig.png}				
+\caption{Si no es de elaboración propia, debe especificarse la fuente \cite{PYTHIA}. \label{figura1}}
+\end{figure}
+\noindent
+
+A continuación se han escrito algunas secciones y subsecciones, así como citas a ecuaciones, tablas, figuras y referencias para ilustrar su uso. El paginado y las nombres de las secciones aparecen automáticamente en la parte superior de cada página. 
+
+Por si se desea reproducir este formato con otro procesador de textos: la fuente es palatino 11pt y los márgenes son 2.88 cm (superior), 2.97 cm (inferior), 2.95 cm (izquierdo y derecho).
+
+
+\section{Una sección}
+
+Scattering processes at high energy hadron colliders can be classified as either hard or soft. For hard processes, such as Higgs boson or high $p_{T}$ jet production, the rates and event properties can be predicted with good accuracy using perturbation theory.
+For soft processes, such as elastic and diffractive processes, the rates and properties are dominated by non-perturbative QCD effects, which are less understood. In this section, these processes will be explained. The total cross section for proton-proton collisions is the sum of different contributions:
+\begin{equation}
+\sigma_{\rm tot}=\sigma_{\rm el}+\sigma_{\rm sd}+\sigma_{\rm dd}+\sigma_{\rm nd}
+\end{equation}
+It is important to notice that in a collider, such as the LHC or the Tevatron, there is a non-negligible probability that one single bunch crossing may produce several separate $pp$ collisions. This phenomenon is known as {\em pile up} and one has to consider it in realistic simulations.
+
+\subsection{Una subsección}
+
+Initially, two beams of particles are coming in towards each other. Normally each particle is characterized by a set of parton distributions, which defines the partonic substructure phenomenologically.
+
+\begin{table}
+\centering
+\begin{tabular} {c|c}
+Subprocess & $|{\cal{M}}|^2$ \\ \hline 
+\\
+$q_{i}q_{j}\rightarrow q_{i}q_{j}$ & $\dis\frac{4}{9}\dis\frac{s^2+u^2}{t^2}$ \\ \\
+$q_{i}q_{i}\rightarrow q_{i}q_{i}$ & $\dis\frac{4}{9}\left(\dis\frac{s^2+u^2}{t^2}+\dis\frac{s^2+t^2}{u^2}\right)-\dis\frac{8}{27}\dis\frac{s^2}{ut}$ \\ \\
+$q_{i}\overline{q}_j\rightarrow q_{i}\overline{q}_i$ &$\dis\frac{4}{9}\left(\dis\frac{s^2+u^2}{t^2}+\dis\frac{t^2+u^2}{s^2}\right)-\dis\frac{8}{27}\dis\frac{u^2}{st}$ \\ \\
+$q_{i}\overline{q}_{i}\rightarrow gg$ & $\dis\frac{32}{27}\left(\dis\frac{u^2+t^2}{ut}\right)-\dis\frac{8}{3}\left(\dis\frac{u^2+t^2}{s^2}\right)$ 
+\end{tabular}
+\caption{Scattering amplitudes for several parton processes. \label{tabla1}}
+\end{table}
+
+The cross section for a process $ij\rightarrow k$ in which one parton of each incoming particle interact is given by \cite{PYTHIA}
+\begin{equation}
+\sigma_{ij\rightarrow k}=\int dx_{1} \int dx_{2}\, f_{i}^{1}(x_{1}) f_{j}^2(x_{2})\,\widehat{\sigma}_{ij\rightarrow k}
+\end{equation}
+Here $\widehat{\sigma}_{ij\rightarrow k}$ is the cross section for the hard partonic subprocess that has to be obtained using the machinery of Feynman diagrams. As a reminder, $f_{i}^{a}(x)$ are the parton-distribution functions
+that encode the structure of the proton. Some of these scattering amplitudes squared are in the table \ref{tabla1}, where $s,t,u$ are the Mandelstam variables, depending on the four-momenta of the scattering particles in a Lorentz-invariant way. They are used for scattering processes of two particles to two particles and are defined by:
+\begin{align}
+s&=(p_1+p_2)^2=(p_3+p_4)^2 \\
+t&=(p_1-p_3)^2=(p_2-p_4)^2 \\
+u&=(p_1-p_4)^2=(p_2-p_3)^2
+\end{align}
+
+\section{Conclusiones}
+
+Esta sección no debería faltar en todo TFG. Después van las referencias que pueden añadirse en la misma página o en una nueva, como se ha hecho aquí. Hay ejemplos de cómo deben citarse artículos \cite{PYTHIA}, actas de congresos \cite{conferencia}, charlas \cite{charla}, libros \cite{libro}, tesis doctorales \cite{tesis} y páginas web \cite{web}.
+
+% Referencias %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+\addcontentsline{toc}{section}{Referencias} % Elige según idioma
+%\addcontentsline{toc}{section}{References} % Elige según idioma
+
+\begin{thebibliography}{100}
+
+\bibitem{PYTHIA}
+  T.~Sjostrand, S.~Mrenna and P.~Z.~Skands, \\
+  {\em PYTHIA 6.4 Physics and Manual}, \\
+  JHEP {\bf 0605} (2006) 026  [hep-ph/0603175].
+  
+\bibitem{conferencia}
+  F.~Wilczek, \\
+  {\em A long view of particle physics}, \\
+  Proceedings of the 25th Solvay Conference on Physics, p. 210-249, \\  
+  Brussels, Belgium, October 19-25, 2011.
+
+\bibitem{charla}
+  D.~Gross, \\
+  {\em Quantum Field Theory: Past, Present and Future}, \\
+  Talk at the Conference in Honour of the 90th Birthday of Freeman Dyson, \\
+  Institute of Advanced Studies, Singapore, August 26-29, 2013.
+
+\bibitem{libro}
+  M.~E. Peskin and D.~V. Schroeder, \\
+  {\em An Introduction to Quantum Field Theory}, \\
+  Addison-Wesley, 1995.
+  
+\bibitem{tesis}
+  M.~R.~Chala, \\
+  {\em Collider Signatures of a Non-Standard Higgs Sector}, \\
+  PhD Thesis, Universidad de Granada, 2014.
+
+\bibitem{web}
+ Particle Physics News and Resources, \\
+ \href{http://www.interactions.org/}{http://www.interactions.org/}
+ 
+\end{thebibliography}
+
+\end{document}
