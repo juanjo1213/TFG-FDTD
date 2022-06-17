@@ -15,8 +15,10 @@
 \usepackage{color}
 \usepackage{booktabs}
 \usepackage{xtab}
+\usepackage{siunitx}
 \usepackage[colorlinks=true,urlcolor=blue,linkcolor=blue,citecolor=blue]{hyperref}
 \numberwithin{equation}{section}
+
 
 % Fuente: palatino
 \usepackage[sc]{mathpazo}
@@ -99,7 +101,7 @@ Curso Académico 2021/2022
 \bigskip
 
 \begin{minipage}{0.8\linewidth}
-En el siguiente TFG se procede a presentar las ventajas de aplicar el método de diferencias finitas en el dominio del tiempo (FDTD) en GPU, a diferencia del modo de aplicación usual el cual se lleva a cabo usando la potencia de cálculo de las CPUs. La principal diferencia radica en el poder de paralelización de las GPUs, el cual nos proporciona al implementar el método en $\mathbb R^{2}$ una disminución en el tiempo de cálculo de las ecuaciones de Maxwell de aproximadamente un orden de magnitud.
+En el siguiente trabajo de fin de grado (TFG) se procede a presentar las ventajas de aplicar el método de diferencias finitas en el dominio del tiempo (FDTD) en unidad de procesamiento gráfico (GPU), a diferencia del modo de aplicación usual el cual se lleva a cabo usando la potencia de cálculo de las CPUs. La principal diferencia radica en el poder de paralelización de las GPUs, el cual nos proporciona al implementar el método en $\mathbb R^{2}$ una disminución en el tiempo de cálculo de las ecuaciones de Maxwell de aproximadamente un orden de magnitud.
 
 %\El método numérico de las diferencias finitas en el dominio del tiempo (FDTD) se usa como herramienta para %\la resolución de ecuaciones diferenciales de primer orden.  Este cobra especial importancia en la %\electrodinámica computacional dado que nos permite resolver las ecuaciones de Maxwell realizandoalgoritmos %\con los que calcular punto a punto los valores del campo electromagnético. Estos algoritmos se implementan %\generalmente usando la potencia de cálculo que nos proporcionan las CPUs y dada la necesidad dediscretizar %\el espacio, el timepo empleado en el proceso de cálculo aumenta con las dimensiones del problema. En este %\TFG se han generado varios algoritmos de uso libre en CUDA para exponer las ventajas que se obtienen al %\implementar este método usando el poder de paralelización que nos proporcionan las GPUs, lo que disminuyeel %\tiempo empleado en el cálculo de los campos. 
 \end{minipage}
@@ -137,13 +139,9 @@ Actualmente su uso está muy extendido ya que posibilita el estudio de la propag
 Desde que se desarrolló el método y se generaron los primero algoritmos se ha hecho uso del poder de cómputo que nos proporcionan las CPUs, el cual ha ido creciendo con el paso de los años. No obstante, al aumentar el tamaño del modelo también aumenta el tiempo necesario para obtener la solución dado que se debe calcular punto a punto los valores de los campos al aplicar el método. Este problema puede solventarse haciendo uso del poder de paralelización que nos ofrecen las tarjetas gráficas (GPUs), pudiendo hacer simultaneamente, hasta cierto límite, todas las operaciones necesarias en cada coordenada de la dimensión espacial. Proceso que se consigue implementando los algoritmos FDTD en el lenguaje CUDA, con el cual podemos podemos determinar un conjunto de hilos para realizar los cálculos simultaneamente.
 
 
-\url{https://github.com/juanjo1213/TFG-FDTD}
-
-
-
 \section{Metodología}
 \subsection{El método de diferencias finitas en el dominio del tiempo}
-El método numérico de las diferencias finitas se emplea en la resolución de ecuaciones diferenciales de primer orden, en particular, el método de la diferencia central finita se basa en aproximar de forma sencilla la derivada de una función en un punto como la diferencia de dicha función evaluada en dos puntos equidistantes al mismo. Haciendo uso del desarrollo en serie de Taylor y aproximando a segundo orden obtenemos:
+El método numérico de las diferencias finitas se emplea en la resolución de ecuaciones diferenciales de primer orden, en particular, el método de la diferencia central finita se basa en aproximar de forma sencilla la derivada de una función en un punto como la diferencia de dicha función evaluada en dos puntos equidistantes al mismo. Haciendo uso del desarrollo en serie de Taylor y aproximando a tercer orden obtenemos:
 
 \begin{equation}
 f(x+h)=y(x)+hy^\prime(x)+\frac{h^3}{2}y^{\prime\prime}(x)+\frac{h^3}{6}y^{\prime\prime\prime}(x)
@@ -573,9 +571,9 @@ Como podemos ver en ellas
 
 \begin{table}[h]
     \centering
-    \begin{tabular}{|c|c|}
+    \begin{tabular}{|r|r|}
     \hline
-         Pasos Temporales &  $t_{CPU}$ - $t_{GPU}$ ($\pm 1.4$ segundos)   \\ \hline \hline
+         Pasos Temporales &  $t_\text{CPU}$ - $t_\text{GPU}$ ($\pm \SI{1.4}{\second}$)   \\ \hline \hline
          10 & 1  \\ \hline
           100 & 19  \\ \hline
           1000 & 188  \\ \hline
@@ -604,7 +602,7 @@ En la determinación de la dependencia del tiempo de cálculo con la densidad de
     \begin{tabular}{|c|c|c|c|}
     \hline
     \multicolumn{4}{ |c| }{CPU} \\ \hline
-         Densidad de puntos & Pasos Temporales &  $t_{CPU}$ ($\pm 1$ segundos) & Minutos ($\pm 0.01$)  \\ \hline \hline
+         Densidad de puntos & Pasos Temporales &  $t_\text{CPU}$ ($\pm 1$ segundos) & Minutos ($\pm 0.01$)  \\ \hline \hline
         10 000 00 & 1000 & 7 & 0.11 \\ \hline
         4 000 000 & 1000 & 32 & 0.53 \\ \hline  
         9 000 000 & 1000 & 71 & 1.18 \\ \hline
@@ -617,13 +615,13 @@ En la determinación de la dependencia del tiempo de cálculo con la densidad de
 
 
 
-\begin{table}[h]
+\begin{table}
     \centering
-    \begin{tabular}{|c|c|c|c|}
+	\begin{tabular}{|c|c|c|c|}
     \hline
     \multicolumn{4}{ |c| }{CPU} \\ \hline
          Densidad de puntos & Pasos Temporales &  $t_{GPU}$ ($\pm 1$ segundos) & Minutos ($\pm 0.01$)  \\ \hline \hline
-        10 000 00 & 1000 & 0 & 0.0 \\ \hline
+        1 000 000 & 1000 & 0 & 0.0 \\ \hline
         4 000 000 & 1000 & 2 & 0.03 \\ \hline  
         9 000 000 & 1000 & 6 & 0.10 \\ \hline
         16 000 000 & 1000 & 10 & 0.17 \\ \hline
