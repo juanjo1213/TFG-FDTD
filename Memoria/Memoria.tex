@@ -131,14 +131,19 @@ In the following TFG it is shown the advantages of implementing the finite diffe
 \fancyfoot{}
 
 \section{Introducción}
-El método numérico de las diferencias finitas es usado en muchos campos para la resolución de ecuaciones diferenciales de primer orden. En particular, el método de la diferencia central finita cobra especial importancia en la electrodinámica computacional donde se emplea para resolver las ecuaciones de Maxwell en el dominio del tiempo, discretizando tiempo y espacio para poder implementar la solución en un algoritmo.
+El método numérico de las diferencias finitas es usado en muchos campos para la resolución de ecuaciones diferenciales de primer orden \cite{Taflove2005}. En particular, el método de la diferencia central finita cobra especial importancia en la electrodinámica computacional donde se emplea para resolver las ecuaciones de Maxwell en el dominio del tiempo, discretizando tiempo y espacio para poder implementar la solución en un algoritmo.
 Actualmente su uso está muy extendido ya que posibilita el estudio de la propagación de señales electromagnéticas por diversos medios. En particular puede usarse para determinar la radiación que actúa sobre una cabeza humana producida por un teléfono móvil o la propagación de una señal en el uso de radares marítimos entre otras aplicaciones.
 
 Desde que se desarrolló el método y se generaron los primero algoritmos se ha hecho uso del poder de cómputo que nos proporcionan las CPUs, el cual ha ido creciendo con el paso de los años. No obstante, al aumentar el tamaño del modelo también aumenta el tiempo necesario para obtener la solución dado que se debe calcular punto a punto los valores de los campos al aplicar el método. Este problema puede solventarse haciendo uso del poder de paralelización que nos ofrecen las tarjetas gráficas (GPUs), pudiendo hacer simultaneamente, hasta cierto límite, todas las operaciones necesarias en cada coordenada de la dimensión espacial. Proceso que se consigue implementando los algoritmos FDTD en el lenguaje CUDA, con el cual podemos podemos determinar un conjunto de hilos para realizar los cálculos simultaneamente.
 
 
+<<<<<<< HEAD
+=======
+\url{https://github.com/juanjo1213/TFG-FDTD}
+>>>>>>> c5487892cffadedd133889e4a189d162f7d517a3
 
 
+<<<<<<< HEAD
 
 
 
@@ -146,6 +151,12 @@ Desde que se desarrolló el método y se generaron los primero algoritmos se ha 
 \section{Metodología}
 \subsection{El método de diferencias finitas en el dominio del tiempo}
 El método numérico de las diferencias finitas se emplea en la resolución de ecuaciones diferenciales de primer orden, en particular, el método de la diferencia central finita se basa en aproximar de forma sencilla la derivada de una función en un punto como la diferencia de dicha función evaluada en dos puntos equidistantes al mismo. Haciendo uso del desarrollo en serie de Taylor y aproximando a tercer orden obtenemos:
+=======
+
+\section{Metodología}
+\subsection{El método de diferencias finitas en el dominio del tiempo}
+El método numérico de las diferencias finitas se emplea en la resolución de ecuaciones diferenciales de primer orden, en particular, el método de la diferencia central finita se basa en aproximar de forma sencilla la derivada de una función en un punto como la diferencia de dicha función evaluada en dos puntos equidistantes al mismo. Haciendo uso del desarrollo en serie de Taylor y aproximando a segundo orden obtenemos:
+>>>>>>> c5487892cffadedd133889e4a189d162f7d517a3
 
 \begin{equation}
 f(x+h)=y(x)+hy^\prime(x)+\frac{h^3}{2}y^{\prime\prime}(x)+\frac{h^3}{6}y^{\prime\prime\prime}(x)
@@ -207,20 +218,17 @@ En $\mathbb R^{3}$ tenemos 3 componentes para el campo eléctrico y 3 para el ma
 Usaremos el modo transversal magnético y utilizaremos directamente las letras E y D sin tildar para nombrar a las componentes normalizadas de los campos:
 
 \begin{equation}
-\frac{\partial D_{z}}{\partial t}=\frac{1}{\sqrt{\varepsilon_{0}\mu_{0}}}(\frac{\partial H_{y}}{\partial x}-\frac{\partial H_{x}}{\partial y})
+\frac{\partial D_{z}}{\partial t}=\frac{1}{\sqrt{\varepsilon_{0}\mu_{0}}}\left(\frac{\partial H_{y}}{\partial x}-\frac{\partial H_{x}}{\partial y}\right)
 \end{equation}
 
 \begin{equation}
 {D}(\omega)=\varepsilon^*_{r}(\omega)E(\omega)
 \end{equation}
 
-\begin{equation}
-\frac{\partial H_{x}}{\partial t}=-\frac{1}{\sqrt{\varepsilon_{0}\mu_{0}}}\frac{\partial E_{z}}{\partial y}
-\end{equation}
-
-\begin{equation}
-\frac{\partial H_{y}}{\partial t}=\frac{1}{\sqrt{\varepsilon_{0}\mu_{0}}}\frac{\partial E_{z}}{\partial x}
-\end{equation}
+\begin{align}
+\frac{\partial H_{x}}{\partial t} &= -\frac{1}{\sqrt{\varepsilon_{0}\mu_{0}}}\frac{\partial E_{z}}{\partial y} \nonumber \\
+\frac{\partial H_{y}}{\partial t} &=  \frac{1}{\sqrt{\varepsilon_{0}\mu_{0}}}\frac{\partial E_{z}}{\partial x}
+\end{align}
 
 Estas son las ecuaciones de una onda plana moviendose en la dirección $x$ e $y$ con el campo eléctrico orientado en la dirección $z$ y el magnético en las direcciones $x$ e $y$. Las componentes a calcular son ecuaciones diferenciales de primer orden, por lo que, aplicando el método de la diferencia central finita componente a componente obtenemos.
 
@@ -265,6 +273,7 @@ Donde $c_{0}$ es la velocidad de la luz en el vacío. Recordando que $\varepsilo
 Lo que nos permite, junto a las expresiones discretizadas en tiempo y espacio de las ecuaciones de Maxwell y la normalización empleada, generar un algoritmo de forma sencilla para calcular los campos:
 
 \begin{align} \label{eq:actualizacion-campos}
+<<<<<<< HEAD
     dz[i,j]&=dz[i,j] + 0.5*(hy[i,j]-hy[i-1,j]-hx[i,j]+hx[i,j-1]) \nonumber \\
     ez[i,j]&=gaz[i,j]*dz[i,j] \nonumber \\
     hx[i,j]&=hx[i,j]+0.5*(ez[i,j]-ez[i,j+1]) \nonumber \\
@@ -272,10 +281,23 @@ Lo que nos permite, junto a las expresiones discretizadas en tiempo y espacio de
 \end{align}
 
 El valor $gaz[i,j]$ depende de las características del medio, por lo que si suponemos vacío su valor es 1. De este modo las ecuaciones \eqref{eq:actualizacion-campos} corresponden a los vectores necesarios para determinar los campos en $\mathbb R^{2}$, donde solo es necesario conocer el valor de la fuente que genera la radiación, ya sea de cualquier tipo, sinusoidal o un pulso entre otros.  
+=======
+	dz[i,j] &=dz[i,j] + 0.5*(hy[i,j]-hy[i-1,j]-hx[i,j]+hx[i,j-1]) \nonumber \\
+    ez[i,j] &=gaz[i,j]*dz[i,j]  \nonumber \\
+    hx[i,j] &=hx[i,j]+0.5*(ez[i,j]-ez[i,j+1]) \nonumber \\
+    hy[i,j] &=hy[i,j]+0.5*(ez[i+1,j]-ez[i,j]) 
+\end{align}
+
+El valor $gaz[i,j]$ depende de las características del medio, por lo que si suponemos vacío su valor es 1. De este modo las ecuaciones \eqref{eq:actualizacion-campos} corresponden a los vectores necesarios para determinar los campos en $\mathbb R^{2}$, donde solo es necesario conocer el valor de la fuente que genera la radiación, ya sea cualquier tipo de fuente, sinusoidal o un pulso entre otros. 
+>>>>>>> c5487892cffadedd133889e4a189d162f7d517a3
 
 En general, para conocer el valor del campo en todo el espacio es necesario calcular  su componente punto a punto pero utilizando la paralelización de la GPU podemos calcularlos todos los valores de los vectores a la vez.
 
 
+<<<<<<< HEAD
+=======
+\subsection{GPU} \label{sec:gpu}
+>>>>>>> c5487892cffadedd133889e4a189d162f7d517a3
 
 \subsection{GPU} \label{subsection:GPU}
 
@@ -286,12 +308,20 @@ En la figura \ref{fig:arquitectura-cpu-gpu} se muestra la diferencia de estructu
 \begin{figure}[h]
 \centering
 \includegraphics[width=15cm]{Nvidia-CPU-GPU.jpg}				
+<<<<<<< HEAD
 \caption{Diferencia de transistores entre CPU y GPU \cite{web}. }
+=======
+\caption{Diferencia de arquitectura entre CPU (izquierda) y GPU (derecha) \cite{web}. }
+>>>>>>> c5487892cffadedd133889e4a189d162f7d517a3
 \label{fig:arquitectura-cpu-gpu}
 \end{figure}
 \noindent
 
+<<<<<<< HEAD
 Nvidia ha desarrollado CUDA para generar soluciones que utilicen la paralerización de las tarjetas gráficas, un lenguaje de programación basado en C, el cual comparte sintaxis en muchos aspectos con este último. En CUDA distinguimos dos tipos de procesos, los llevados a cabo en la CPU (host) y los ejecutados desde la GPU (Device o Kernel), teniendo acceso ambos dispositivos a dos tipos de memoria, llamadas global y constante. En la figura \ref{fig:componentes gpu} se muestra la estructura del device y cómo ambos comparten dichas memorias. Para identificar el lugar de ejecución de cada función en CUDA se especifica en el encabezado de la misma las palabras \_\_host\_\_ en las aplicaciones ejecutadas en CPU y \_\_global\_\_ en las ejecutadas en GPU.
+=======
+Para generar soluciones que utilicen la paralerización de las tarjetas gráfics Nvidia ha desarrollado CUDA, un lenguaje de programación basado en C, el cual comparte sintaxis en muchos aspectos con este último lenguaje. En CUDA distinguimos dos tipos de procesos, los llevados a cabo en la CPU o 'host' y los ejecutados desde la GPU o 'device', teniendo acceso ambos dispositivos a dos tipos de memoria, global y constante. En la figura \ref{fig:arquitectura-cpu-gpu} se muestra al estructura del device y cómo ambos comparten memoria. Para identificar el lugar de ejecución de cada función cuda ha nombrado como \_\_host\_\_ a las aplicaciones ejecutadas en CPU y \_\_global\_\_ a las ejecutadas en GPU.
+>>>>>>> c5487892cffadedd133889e4a189d162f7d517a3
 
 Cada tarjeta gráfica tiene un número determinado de threads o hilos, los cuales pueden realizar un cálculo concreto simultaneamente cuando son llamados por una función global (desde el device). Para realizar esta llamada CUDA divide los núcleos en bloques y mallas como se puede ver en la figura \ref{fig:componentes gpu}, donde se muestra una malla de dos bloques y dos hilos en cada bloque, siendo 4 los hilos totales. Destacar que en general el número de hilos tiene que coincidir necesariamente con el número de núcleos ya que, como ocurre en las CPUs, puede haber varios hilos en un mismo núcleo. Esto significa que dentro de un mísmo núcleo pueden realizarse tantos cálculos simultáneos como hilos tenga dicho procesador, no obstante la diferencia de hilos entre un procesador y una gráfica es de varios órdenes de magnitud, pudiendo ser 6 en una CPU y miles en una GPU.
 
@@ -310,12 +340,21 @@ Dadas las variables a utilizar, hilos, bloques y mallas, es necesario identifica
 \begin{figure}[h]
 \centering
 \includegraphics[width=10 cm]{Nvidia_Topologia_virtual.jpg}				
+<<<<<<< HEAD
 \caption{Topología dentro de hilos, bloques y mallas \cite{web} }
 \label{fig:hilos, bloques y mallas en gpu}
 \end{figure}
 \noindent
 
 No obstante, en CUDA esta división es lineal como se muestra en la figura \ref{fig:localizacion de hilos}. En ella podemos ver separados por franjas claras y oscuras el paso de un bloque a otro, estando estos divididos por el número de hilos que hay dentro de cada bloque. De modo que, para poder identificar un hilo podemos concebir la malla como una matriz donde las filas determinan el bloque y las columnas los hilos. Así, se distingue unívocamente cada hilo multiplicando las columnas totales por el número del bloque donde está el hilo y sumandole la posición que ocupa en el.
+=======
+\caption{Topología dentro de hilos, bloques y mallas (Documentación de Nvidia [3]) }
+\label{fig:topologia-hilos}
+\end{figure}
+\noindent
+
+No obstante, la división que hace CUDA de los hilos es lineal como se muestra en la figura \ref{fig:topologia-hilos}. En ella podemos ver separados por franjas claras y oscuras el paso de un bloque a otro. De modo que, para poder identificar un hilo podemos concebir la malla como una matriz donde las filas determinan el bloque y las columnas los hilos. Así, se distingue unívocamente cada hilo multiplicando las columnas totales por el número del bloque donde está el hilo y sumandole la posición que ocupa en el.
+>>>>>>> c5487892cffadedd133889e4a189d162f7d517a3
 
 \begin{figure}[h]
 \centering
@@ -338,13 +377,43 @@ Es necesario resaltar la necesidad de seleccionar la cantidad de hilos y bloques
 Finalmente, para medir el tiempo de cálculo en el device CUDA nos proporciona la función 'cudaEvent', con la cual se establecen dos marcas de tiempo en el algoritmo y se calcula el tiempo como la resta de estas mismas, siendo la diferencia el tiempo transcurrido en el device al realizar las operaciones.
 Para calcular el tiempo en el host se ha utilizado la función 'clock\_t' y de la misma forma se han creado dos marcas temporales y se ha calculado la diferencia. En ambos casos se han dividido los resultados entre las cuentas por segundo dentro del procesador y la tarjeta gráfica para obtener el tiempo en segundos.
 
+<<<<<<< HEAD
 \section{Algoritmo}
 En este TFG el autor ha desarrollado varios códigos en CUDA de libre uso para la resolución de las ecuaciones de Maxwell aplicando el método FDTD en dos dimensiones. Los códigos generados pueden encontrarse en el siguiente repositorio de github:
+=======
+\section{Implementación}
+>>>>>>> c5487892cffadedd133889e4a189d162f7d517a3
 
 \url{https://github.com/juanjo1213/TFG-FDTD}
 
 En el mismo están los algoritmos utilizados para la solución en 2D implementada tanto en la cpu y en la gpu. La implementación de la solución en el device está nombrada como 'fd2d\_simp.cu' y la ejecutada en el host como 'HOST\_FD2D\_SIMP.cu'.
 
+<<<<<<< HEAD
+=======
+\begin{verbatim}
+	__host__ void check_CUDA_Error(const char* mensaje)
+	{
+		cudaError_t error;
+		cudaDeviceSynchronize();
+		error = cudaGetLastError();
+		if (error != cudaSuccess)
+		{
+			printf("ERROR %d: %s (%s)\n", error, cudaGetErrorString(error), mensaje);
+            printf("\npulsa INTRO para finalizar...");
+            fflush(stdin);
+        	char tecla = getchar();
+			exit(-1);
+		}
+	}
+\end{verbatim}
+
+%\begin{figure}[h]
+%\centering
+%\includegraphics[width=15cm]{FD2D_Host_loop.jpg}				
+%\caption{Implementación de las ecuaciones (2.21-2.24) para el cálculo de los campos en la CPU }
+%\end{figure}
+%\noindent
+>>>>>>> c5487892cffadedd133889e4a189d162f7d517a3
 
 
 Para la ejecución de los algoritmos se ha utilizado un procesador i7-6700K procesador de 4 núcleos y 8 hilos con una frecuencia máxima de 4.2 GHz por núcleo y una tarjeta gráfica GTX 1070 con 8GB de memoria RAM y un total de 1920 núcleos CUDA. 
@@ -656,10 +725,17 @@ sadfa
   {\em Electromagnetic simulation using the FDTD method with Python}, \\
   IEEE PRESS WILEY, 2020.
   
+<<<<<<< HEAD
   \bibitem{Taflove2005}
   Allen Taflove and Susan C~Hagness, \\
   {\em Computational electrodynamics. The Finite-Difference Time-Domain Method}, \\
   ARTECH HOUSE, 2005.
+=======
+\bibitem{Taflove2005}
+Allen Taflove and Susan C~Hagness, \\
+{\em Computational electrodynamics. The Finite-Difference Time-Domain Method}, \\
+ARTECH HOUSE, 2005.
+>>>>>>> c5487892cffadedd133889e4a189d162f7d517a3
 
 \bibitem{web}
  Nvidia documentation, \\
