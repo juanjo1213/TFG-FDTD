@@ -16,9 +16,9 @@
 \usepackage{booktabs}
 \usepackage{xtab}
 \usepackage{siunitx}
+\usepackage{float}
 \usepackage[colorlinks=true,urlcolor=blue,linkcolor=blue,citecolor=blue]{hyperref}
 \numberwithin{equation}{section}
-
 
 % Fuente: palatino
 \usepackage[sc]{mathpazo}
@@ -101,7 +101,7 @@ Curso Académico 2021/2022
 \bigskip
 
 \begin{minipage}{0.8\linewidth}
-En el siguiente trabajo de fin de grado (TFG) se procede a presentar las ventajas de aplicar el método de diferencias finitas en el dominio del tiempo (FDTD) en unidad de procesamiento gráfico (GPU), a diferencia del modo de aplicación usual el cual se lleva a cabo usando la potencia de cálculo de las CPUs. La principal diferencia radica en el poder de paralelización de las GPUs, el cual nos proporciona al implementar el método en $\mathbb R^{2}$ una disminución en el tiempo de cálculo de las ecuaciones de Maxwell de aproximadamente un orden de magnitud.
+En el siguiente TFG se procede a presentar las ventajas de aplicar el método de diferencias finitas en el dominio del tiempo (FDTD) en GPU, a diferencia del modo de aplicación usual el cual se lleva a cabo usando la potencia de cálculo de las CPUs. La principal diferencia radica en el poder de paralelización de las GPUs, el cual nos proporciona al implementar el método en $\mathbb R^{2}$ una disminución en el tiempo de cálculo de las ecuaciones de Maxwell de aproximadamente un orden de magnitud.
 
 %\El método numérico de las diferencias finitas en el dominio del tiempo (FDTD) se usa como herramienta para %\la resolución de ecuaciones diferenciales de primer orden.  Este cobra especial importancia en la %\electrodinámica computacional dado que nos permite resolver las ecuaciones de Maxwell realizandoalgoritmos %\con los que calcular punto a punto los valores del campo electromagnético. Estos algoritmos se implementan %\generalmente usando la potencia de cálculo que nos proporcionan las CPUs y dada la necesidad dediscretizar %\el espacio, el timepo empleado en el proceso de cálculo aumenta con las dimensiones del problema. En este %\TFG se han generado varios algoritmos de uso libre en CUDA para exponer las ventajas que se obtienen al %\implementar este método usando el poder de paralelización que nos proporcionan las GPUs, lo que disminuyeel %\tiempo empleado en el cálculo de los campos. 
 \end{minipage}
@@ -133,14 +133,20 @@ In the following TFG it is shown the advantages of implementing the finite diffe
 \fancyfoot{}
 
 \section{Introducción}
-El método numérico de las diferencias finitas es usado en muchos campos para la resolución de ecuaciones diferenciales de primer orden \cite{Taflove2005}. En particular, el método de la diferencia central finita cobra especial importancia en la electrodinámica computacional donde se emplea para resolver las ecuaciones de Maxwell en el dominio del tiempo, discretizando tiempo y espacio para poder implementar la solución en un algoritmo.
+El método numérico de las diferencias finitas es usado en muchos campos para la resolución de ecuaciones diferenciales de primer orden. En particular, el método de la diferencia central finita cobra especial importancia en la electrodinámica computacional donde se emplea para resolver las ecuaciones de Maxwell en el dominio del tiempo, discretizando tiempo y espacio para poder implementar la solución en un algoritmo.
 Actualmente su uso está muy extendido ya que posibilita el estudio de la propagación de señales electromagnéticas por diversos medios. En particular puede usarse para determinar la radiación que actúa sobre una cabeza humana producida por un teléfono móvil o la propagación de una señal en el uso de radares marítimos entre otras aplicaciones.
 
 Desde que se desarrolló el método y se generaron los primero algoritmos se ha hecho uso del poder de cómputo que nos proporcionan las CPUs, el cual ha ido creciendo con el paso de los años. No obstante, al aumentar el tamaño del modelo también aumenta el tiempo necesario para obtener la solución dado que se debe calcular punto a punto los valores de los campos al aplicar el método. Este problema puede solventarse haciendo uso del poder de paralelización que nos ofrecen las tarjetas gráficas (GPUs), pudiendo hacer simultaneamente, hasta cierto límite, todas las operaciones necesarias en cada coordenada de la dimensión espacial. Proceso que se consigue implementando los algoritmos FDTD en el lenguaje CUDA, con el cual podemos podemos determinar un conjunto de hilos para realizar los cálculos simultaneamente.
 
 
+
+
+
+
+
+
 \section{Metodología}
-\subsection{El método de diferencias finitas en el dominio del tiempo}
+\subsection{El método de diferencias finitas en el dominio del tiempo} \label{section:metodo_diferencias_finitas}
 El método numérico de las diferencias finitas se emplea en la resolución de ecuaciones diferenciales de primer orden, en particular, el método de la diferencia central finita se basa en aproximar de forma sencilla la derivada de una función en un punto como la diferencia de dicha función evaluada en dos puntos equidistantes al mismo. Haciendo uso del desarrollo en serie de Taylor y aproximando a tercer orden obtenemos:
 
 \begin{equation}
@@ -203,17 +209,20 @@ En $\mathbb R^{3}$ tenemos 3 componentes para el campo eléctrico y 3 para el ma
 Usaremos el modo transversal magnético y utilizaremos directamente las letras E y D sin tildar para nombrar a las componentes normalizadas de los campos:
 
 \begin{equation}
-\frac{\partial D_{z}}{\partial t}=\frac{1}{\sqrt{\varepsilon_{0}\mu_{0}}}\left(\frac{\partial H_{y}}{\partial x}-\frac{\partial H_{x}}{\partial y}\right)
+\frac{\partial D_{z}}{\partial t}=\frac{1}{\sqrt{\varepsilon_{0}\mu_{0}}}(\frac{\partial H_{y}}{\partial x}-\frac{\partial H_{x}}{\partial y})
 \end{equation}
 
 \begin{equation}
 {D}(\omega)=\varepsilon^*_{r}(\omega)E(\omega)
 \end{equation}
 
-\begin{align}
-\frac{\partial H_{x}}{\partial t} &= -\frac{1}{\sqrt{\varepsilon_{0}\mu_{0}}}\frac{\partial E_{z}}{\partial y} \nonumber \\
-\frac{\partial H_{y}}{\partial t} &=  \frac{1}{\sqrt{\varepsilon_{0}\mu_{0}}}\frac{\partial E_{z}}{\partial x}
-\end{align}
+\begin{equation}
+\frac{\partial H_{x}}{\partial t}=-\frac{1}{\sqrt{\varepsilon_{0}\mu_{0}}}\frac{\partial E_{z}}{\partial y}
+\end{equation}
+
+\begin{equation}
+\frac{\partial H_{y}}{\partial t}=\frac{1}{\sqrt{\varepsilon_{0}\mu_{0}}}\frac{\partial E_{z}}{\partial x}
+\end{equation}
 
 Estas son las ecuaciones de una onda plana moviendose en la dirección $x$ e $y$ con el campo eléctrico orientado en la dirección $z$ y el magnético en las direcciones $x$ e $y$. Las componentes a calcular son ecuaciones diferenciales de primer orden, por lo que, aplicando el método de la diferencia central finita componente a componente obtenemos.
 
@@ -258,15 +267,17 @@ Donde $c_{0}$ es la velocidad de la luz en el vacío. Recordando que $\varepsilo
 Lo que nos permite, junto a las expresiones discretizadas en tiempo y espacio de las ecuaciones de Maxwell y la normalización empleada, generar un algoritmo de forma sencilla para calcular los campos:
 
 \begin{align} \label{eq:actualizacion-campos}
-	dz[i,j] &=dz[i,j] + 0.5*(hy[i,j]-hy[i-1,j]-hx[i,j]+hx[i,j-1]) \nonumber \\
-    ez[i,j] &=gaz[i,j]*dz[i,j]  \nonumber \\
-    hx[i,j] &=hx[i,j]+0.5*(ez[i,j]-ez[i,j+1]) \nonumber \\
-    hy[i,j] &=hy[i,j]+0.5*(ez[i+1,j]-ez[i,j]) 
+    dz[i,j]&=dz[i,j] + 0.5*(hy[i,j]-hy[i-1,j]-hx[i,j]+hx[i,j-1]) \nonumber \\
+    ez[i,j]&=gaz[i,j]*dz[i,j] \nonumber \\
+    hx[i,j]&=hx[i,j]+0.5*(ez[i,j]-ez[i,j+1]) \nonumber \\
+    hy[i,j]&=hy[i,j]+0.5*(ez[i+1,j]-ez[i,j])
 \end{align}
 
-El valor $gaz[i,j]$ depende de las características del medio, por lo que si suponemos vacío su valor es 1. De este modo las ecuaciones \eqref{eq:actualizacion-campos} corresponden a los vectores necesarios para determinar los campos en $\mathbb R^{2}$, donde solo es necesario conocer el valor de la fuente que genera la radiación, ya sea cualquier tipo de fuente, sinusoidal o un pulso entre otros. 
+El valor $gaz[i,j]$ depende de las características del medio, por lo que si suponemos vacío su valor es 1. De este modo las ecuaciones \eqref{eq:actualizacion-campos} corresponden a los vectores necesarios para determinar los campos en $\mathbb R^{2}$, donde solo es necesario conocer el valor de la fuente que genera la radiación, ya sea de cualquier tipo, sinusoidal o un pulso entre otros.  
 
 En general, para conocer el valor del campo en todo el espacio es necesario calcular  su componente punto a punto pero utilizando la paralelización de la GPU podemos calcularlos todos los valores de los vectores a la vez.
+
+
 
 \subsection{GPU} \label{subsection:GPU}
 
@@ -277,12 +288,12 @@ En la figura \ref{fig:arquitectura-cpu-gpu} se muestra la diferencia de estructu
 \begin{figure}[h]
 \centering
 \includegraphics[width=15cm]{Nvidia-CPU-GPU.jpg}				
-\caption{Diferencia de arquitectura entre CPU (izquierda) y GPU (derecha) \cite{web}. }
+\caption{Diferencia de transistores entre CPU y GPU \cite{web}. }
 \label{fig:arquitectura-cpu-gpu}
 \end{figure}
 \noindent
 
-Para generar soluciones que utilicen la paralerización de las tarjetas gráfics Nvidia ha desarrollado CUDA, un lenguaje de programación basado en C, el cual comparte sintaxis en muchos aspectos con este último lenguaje. En CUDA distinguimos dos tipos de procesos, los llevados a cabo en la CPU o 'host' y los ejecutados desde la GPU o 'device', teniendo acceso ambos dispositivos a dos tipos de memoria, global y constante. En la figura \ref{fig:arquitectura-cpu-gpu} se muestra al estructura del device y cómo ambos comparten memoria. Para identificar el lugar de ejecución de cada función cuda ha nombrado como \_\_host\_\_ a las aplicaciones ejecutadas en CPU y \_\_global\_\_ a las ejecutadas en GPU.
+Nvidia ha desarrollado CUDA para generar soluciones que utilicen la paralerización de las tarjetas gráficas, un lenguaje de programación basado en C, el cual comparte sintaxis en muchos aspectos con este último. En CUDA distinguimos dos tipos de procesos, los llevados a cabo en la CPU (host) y los ejecutados desde la GPU (Device o Kernel), teniendo acceso ambos dispositivos a dos tipos de memoria, llamadas global y constante. En la figura \ref{fig:componentes gpu} se muestra la estructura del device y cómo ambos comparten dichas memorias. Para identificar el lugar de ejecución de cada función en CUDA se especifica en el encabezado de la misma las palabras \_\_host\_\_ en las aplicaciones ejecutadas en CPU y \_\_global\_\_ en las ejecutadas en GPU.
 
 Cada tarjeta gráfica tiene un número determinado de threads o hilos, los cuales pueden realizar un cálculo concreto simultaneamente cuando son llamados por una función global (desde el device). Para realizar esta llamada CUDA divide los núcleos en bloques y mallas como se puede ver en la figura \ref{fig:componentes gpu}, donde se muestra una malla de dos bloques y dos hilos en cada bloque, siendo 4 los hilos totales. Destacar que en general el número de hilos tiene que coincidir necesariamente con el número de núcleos ya que, como ocurre en las CPUs, puede haber varios hilos en un mismo núcleo. Esto significa que dentro de un mísmo núcleo pueden realizarse tantos cálculos simultáneos como hilos tenga dicho procesador, no obstante la diferencia de hilos entre un procesador y una gráfica es de varios órdenes de magnitud, pudiendo ser 6 en una CPU y miles en una GPU.
 
@@ -301,12 +312,12 @@ Dadas las variables a utilizar, hilos, bloques y mallas, es necesario identifica
 \begin{figure}[h]
 \centering
 \includegraphics[width=10 cm]{Nvidia_Topologia_virtual.jpg}				
-\caption{Topología dentro de hilos, bloques y mallas (Documentación de Nvidia [3]) }
-\label{fig:topologia-hilos}
+\caption{Topología dentro de hilos, bloques y mallas \cite{web} }
+\label{fig:hilos, bloques y mallas en gpu}
 \end{figure}
 \noindent
 
-No obstante, la división que hace CUDA de los hilos es lineal como se muestra en la figura \ref{fig:topologia-hilos}. En ella podemos ver separados por franjas claras y oscuras el paso de un bloque a otro. De modo que, para poder identificar un hilo podemos concebir la malla como una matriz donde las filas determinan el bloque y las columnas los hilos. Así, se distingue unívocamente cada hilo multiplicando las columnas totales por el número del bloque donde está el hilo y sumandole la posición que ocupa en el.
+No obstante, en CUDA esta división es lineal como se muestra en la figura \ref{fig:localizacion de hilos}. En ella podemos ver separados por franjas claras y oscuras el paso de un bloque a otro, estando estos divididos por el número de hilos que hay dentro de cada bloque. De modo que, para poder identificar un hilo podemos concebir la malla como una matriz donde las filas determinan el bloque y las columnas los hilos. Así, se distingue unívocamente cada hilo multiplicando las columnas totales por el número del bloque donde está el hilo y sumandole la posición que ocupa en el.
 
 \begin{figure}[h]
 \centering
@@ -327,37 +338,15 @@ Es necesario resaltar la necesidad de seleccionar la cantidad de hilos y bloques
 
 
 Finalmente, para medir el tiempo de cálculo en el device CUDA nos proporciona la función 'cudaEvent', con la cual se establecen dos marcas de tiempo en el algoritmo y se calcula el tiempo como la resta de estas mismas, siendo la diferencia el tiempo transcurrido en el device al realizar las operaciones.
-Para calcular el tiempo en el host se ha utilizado la función 'clock\_t' y de la misma forma se han creado dos marcas temporales y se ha calculado la diferencia. En ambos casos se han dividido los resultados entre las cuentas por segundo dentro del procesador y la tarjeta gráfica para obtener el tiempo en segundos.
+Para calcular el tiempo en el host se ha utilizado la función 'clock\_t' y de la misma forma se han creado dos marcas temporales y se ha calculado la diferencia. En ambos casos se han dividido los resultados entre las cuentas por segundo dentro del procesador y la tarjeta gráfica para obtener el tiempo en segundos con una precisión de $\pm \SI{0.001}{\second}$.
 
-\section{Implementación}
+\section{Algoritmo}
+En este TFG el autor ha desarrollado varios códigos en CUDA de libre uso para la resolución de las ecuaciones de Maxwell aplicando el método FDTD en dos dimensiones. Los códigos generados pueden encontrarse en el siguiente repositorio de github:
 
 \url{https://github.com/juanjo1213/TFG-FDTD}
 
 En el mismo están los algoritmos utilizados para la solución en 2D implementada tanto en la cpu y en la gpu. La implementación de la solución en el device está nombrada como 'fd2d\_simp.cu' y la ejecutada en el host como 'HOST\_FD2D\_SIMP.cu'.
 
-\begin{verbatim}
-	__host__ void check_CUDA_Error(const char* mensaje)
-	{
-		cudaError_t error;
-		cudaDeviceSynchronize();
-		error = cudaGetLastError();
-		if (error != cudaSuccess)
-		{
-			printf("ERROR %d: %s (%s)\n", error, cudaGetErrorString(error), mensaje);
-            printf("\npulsa INTRO para finalizar...");
-            fflush(stdin);
-        	char tecla = getchar();
-			exit(-1);
-		}
-	}
-\end{verbatim}
-
-%\begin{figure}[h]
-%\centering
-%\includegraphics[width=15cm]{FD2D_Host_loop.jpg}				
-%\caption{Implementación de las ecuaciones (2.21-2.24) para el cálculo de los campos en la CPU }
-%\end{figure}
-%\noindent
 
 
 Para la ejecución de los algoritmos se ha utilizado un procesador i7-6700K procesador de 4 núcleos y 8 hilos con una frecuencia máxima de 4.2 GHz por núcleo y una tarjeta gráfica GTX 1070 con 8GB de memoria RAM y un total de 1920 núcleos CUDA. 
@@ -506,7 +495,7 @@ En ambas funciones se emplea un bucle ya sea dentro o fuera de la función para 
 
 \section{Resultados}
 
-Al resolver las ecuaciones \ref{eq:actualizacion-campos}, como cabe esperar, obtenemos una onda electromagnética propagandose por el espacio, la cual es generada por un pulso gaussiano como fuente. La figura \ref{fig:solucion} muestra la propagación del campo eléctrico (Ez) en un espacio de 3600 puntos y 20, 30, 40, 50 pasos temporales. Como podemos ver, la onda generada en el centro se propaga en las direcciones $x$ e $y$.  
+Al resolver las ecuaciones \ref{eq:actualizacion-campos} obtenemos una onda electromagnética propagandose por el espacio, en nuestro caso, siendo generada por un pulso gaussiano como fuente. La figura \ref{fig:solucion} muestra la propagación del campo eléctrico (Ez) en un espacio de 3600 puntos y 20, 30, 40, 50 pasos temporales. Como podemos ver, la onda generada en el centro del espacio se propaga en las direcciones $x$ e $y$.  
 
 \begin{figure}[h]
 \centering
@@ -516,52 +505,38 @@ Al resolver las ecuaciones \ref{eq:actualizacion-campos}, como cabe esperar, obt
 \end{figure}
 \noindent
 
-Para determinar la ganancia en tíempo de cálculo al implementar este algoritmo en CUDA se han realizado dos experimenteos, donde se prueba la dependencia de este con el número de pasos temporales y la densidad de puntos.
+Para determinar el aumento de velocidad en tiempo de cálculo al implementar este algoritmo en CUDA se han realizado dos experimenteos donde se determina su dependencia con el número de pasos temporales y la densidad de puntos. En ambos se han realizado una serie de ejecuciones para cada tiempo a determinar, de las cuales se han calculado el porcentaje de dispersión, la media y se ha elejido el error del resultado como el máximo entre la sensibilidad de la medida y la desviación de la media.
 
-\subsection{Dependencia del tiempo de cálculo con el número de pasos temporales}
+\subsection{Dependencia del tiempo de cálculo con el número de pasos temporales} \label{Subsection:Variacion pasos temporales}
 
-Para determinar la dependencia del tiempo de cálculo con el número de pasos temporales se han llevado a cabo diez ejecuciones, cinco utilizando el host y cinco utilizando el device. En las diez se ha utilizado una densidad constante de puntos de 25 millones y se han variado los pasos temporales desde 10 hasta 10 000. En las tablas \ref{tab:npasosCPU} y \ref{tab:npasosGPU} se enumeran los datos obtenidos en las ejecuciones realizas.
+Para determinar la dependencia del tiempo de cálculo con el número de pasos temporales se han llevado a cabo varias ejecuciones en host y device. En estas se ha utilizado una densidad constante de puntos de 25 millones y se han variado los pasos temporales desde 10 hasta 10 000 realizando un mínimo de tres medidas para cada valor de pasos temporales en cada algoritmo. En la tabla  \ref{tab:npasos} se enumeran los datos obtenidos en las ejecuciones realizas, en ella se ha nombrado al tiempo de ejecución en CPU como $t_\text{CPU}$ y el tiempo de ejecución en el device como $t_\text{GPU}$. En la última columna se ha calculado el llamado aumento de velocidad (speed up) para determinar la mejora en tiempo de ejecución de una tecnología a otra.
 
-\begin{table}[h]
-    \centering
-    \begin{tabular}{|c|c|c|c|}
-    \hline
-    \multicolumn{4}{ |c| }{CPU} \\ \hline
-         Densidad de puntos & Pasos Temporales &  $t_{CPU}$ ($\pm 1$ segundos) & Minutos ($\pm 0.01$)  \\ \hline \hline
-        25 000 000 & 10 & 1 & 0.01 \\ \hline
-         25 000 000 & 100 & 19 & 0.32 \\ \hline
-         25 000 000 & 1000 & 204 & 3.40 \\ \hline
-         25 000 000 & 5000 & 1105 & 18.42 \\ \hline
-         25 000 000 & 10000 & 2199 & 37.05 \\ \hline
-    \end{tabular}
-    \caption{Dependencia del tiempo de cálculo con los pasos temporales en CPU}
-    \label{tab:npasosCPU}
-\end{table}
-
-
+Como podemos ver en la tabla, haciendo la media de los valores calculados, obtenemos una mejora en la velocidad de ejecución (speed up) de aproximádamente 12.31x. Esto nos indica que el álgoritmo CUDA nos ofrece una solución en 12.31 menos tiempo que la solución en CPU.
 
 \begin{table}[h]
     \centering
-    \begin{tabular}{|c|c|c|c|}
+    \begin{tabular}{|r|c|c|c|}
     \hline
-    \multicolumn{4}{ |c| }{GPU} \\ \hline
-         Densidad de puntos & Pasos Temporales &  $t_{GPU}$ ($\pm 1$ segundos) & Minutos ($\pm 0.01$)  \\ \hline \hline
-         25 000 000 & 10 & 0 & 0.00 \\ \hline
-         25 000 000 & 100 & 0 & 0.00 \\ \hline
-         25 000 000 & 1000 & 16 & 0.27 \\ \hline
-         25 000 000 & 5000 & 87 & 1.45 \\ \hline
-         25 000 000 & 10000 & 173 & 3.28 \\ \hline
+    Pasos Temporales &  $t_\text{CPU}$ ($\SI{}{\second}$)  & $t_\text{GPU}$ ($\SI{}{\second}$) &  ($t_\text{GPU}$/$t_\text{CPU}$)  \\ \hline \hline
+     10 & 1.971 $\pm$ 0.008 & 0.165 $\pm$ 0.001 & 11.91 $\pm$ 0.09\\ \hline
+     100 & 19.32 $\pm$ 0.05 & 1.633 $\pm$ 0.003 & 11.83 $\pm$ 0.04\\ \hline
+     1000 & 209.1 $\pm$ 1.4 & 16.397 $\pm$ 0.023 & 12.75 $\pm$ 0.09\\ \hline
+     10000 & 2150 $\pm$ 13 & 168.6 $\pm$ 0.9 & 12.75 $\pm$ 0.10\\ \hline
     \end{tabular}
-    \caption{Dependencia del tiempo de cálculo con los pasos temporales en GPU}
-    \label{tab:npasosGPU}
+    \caption{Datos obtenidos tras medir la dependencia del tiempo de cálculo con el número de pasos temporales en CPU y GPU además de calcular el aumento en velocidad al usar CUDA.}
+    \label{tab:npasos}
 \end{table}
 
-Como podemos ver en ellas
+
+Al escoger un aumento lineal del número de pasos temporales cabe esperar que el aumento del tiempo de cálculo también sea lineal, ya que en ambos se ha empleado un bucle para realizar las funciones un número determinado de veces. No obstante, tambien es de esperar que en el device el tiempo de cálculo sea mucho menor debido a la paralelización aplicada, reduciendo el tiempo que se tarda en pasar de una sección del bucle a otra. Podemos comprobar estos resultados en la figura \ref{fig:t-pasos_temporales}, donde vemos un gráfico de los resultados obtenidos en la tabla \ref{tab:npasos}, representando en color azul los correspondientes al algoritmo ejecutado en el host y en color naranja los del device. En el gráfico se han representado las regresiónes lineales obtenidas para las dos series de datos, siguiendo ambas una tendencia completamente lineal ya que en las dos se ha obtenido un valor del coeficiente $R^2$ de 0.99.
+
+Es de interes destacar la diferencia en las pendientes de ambas regresiones, siendo en la del host de 0.2152 $\pm$ 0.0003 $\SI{}{\second}$ y la del device de 0.01687 $\pm$ 3$\cdot 10^{-5}$ $\SI{}{\second}$, lo que nos indica, al ser la pendiente del host un orden de magnitud mayor que la del device, un aumento mucho menor en el tiempo de cálculo al aumentar el número de pasos temporales utilizando CUDA que aplicando el algoritmo en la CPU.
+
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=15 cm]{T-Pasos_temporales.jpg}				
-\caption{Relación entre el tiempo de cálculo y el número de pasos temporales para una densidad de puntos de 25 millones. La línea naranja representa el tiempo de ejecución en el device y la azul el tiempo de ejecución en el host}
+\caption{Relación entre el tiempo de cálculo y el número de pasos temporales para una densidad de puntos de 25 millones. La línea naranja representa el tiempo de ejecución en el device y la azul el tiempo de ejecución en el host. En ambas series de datos se ha representado la recta obtenida tras hacer una regresión lineal. Los valores de la pendiente obtenidos son de 0.2152 $\pm$ 0.0003 $\SI{}{\second}$ para el host y de 0.01687 $\pm$ 3$\cdot 10^{-5}$ $\SI{}{\second}$ para el device.}
 \label{fig:t-pasos_temporales}
 \end{figure}
 \noindent
@@ -569,81 +544,43 @@ Como podemos ver en ellas
 
 
 
-\begin{table}[h]
-    \centering
-    \begin{tabular}{|r|r|}
-    \hline
-         Pasos Temporales &  $t_\text{CPU}$ - $t_\text{GPU}$ ($\pm \SI{1.4}{\second}$)   \\ \hline \hline
-         10 & 1  \\ \hline
-          100 & 19  \\ \hline
-          1000 & 188  \\ \hline
-          5000 & 1018  \\ \hline
-          10000 & 2626  \\ \hline
-    \end{tabular}
-    \caption{t}
-    \label{tab:1}
-\end{table}
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=15 cm]{DiferenciaEntiempoDeCalculo.jpg}				
-\caption{Diferencia en tiempo de cálculo}
-\label{fig:diferencia_en_tiempo_de_calculo}
-\end{figure}
-\noindent
 
 
-\subsection{Variación del tiempo de cálculo al variar la densidad de puntos}
+\subsection{Variación del tiempo de cálculo al variar la densidad de puntos} 
 
-En la determinación de la dependencia del tiempo de cálculo con la densidad de puntos también se han llevado a cabo diez ejecuciones, cinco en el host y cinco en el device, donde se ha determinado el tiempo de cálculo para un número de 1000 pasos temporales y una densidad de puntos desde 10 millones hasta 25 millones. En las tablas \ref{tab:densidad_de_puntos_CPU} y \ref{tab:npasosGPU} podemos ver los datos obtenidos tras las diez eejcuciones.
+Para determinar la dependencia del tiempo  de cálculo de los algoritmos con la densidad de puntos utilizada también se han realizado varias ejecuciones tanto en host como en device. En todas ellas se ha mantenido constante el número de pasos temporales, 1000 y se ha variado la densidad de puntos desde $10^6$ hasta $25\cdot 10^6$. No se han escogido valores equiespaciados de la densidad de puntos para la recolección de datos por la condición mencionada en la sección \ref{section:metodo_diferencias_finitas}, donde escogimos $\Delta x=\Delta y$ para así facilitar el desarrollo de las expresiones. En la tabla \ref{tab:t_densidad_de_punto} se recogen los datos obtenidos dividos en columnas, al igual que en el apartado anterior, se han utilizado las letras  $t_\text{CPU}$ y  $t_\text{GPU}$ para nombrar a los tiempos de cálculo de host y device respectivamente. 
+
+En la última columna también se recoge el aumento en velocidad de cálculo (speed up), siendo en este caso la media de los valores de aproximádamente 13x, lo que nos indica que obtenemos una solución en CUDA 13 veces más rápido que en CPU.
 
 \begin{table}[h]
     \centering
-    \begin{tabular}{|c|c|c|c|}
+    \begin{tabular}{|r|c|c|c|}
     \hline
-    \multicolumn{4}{ |c| }{CPU} \\ \hline
-         Densidad de puntos & Pasos Temporales &  $t_\text{CPU}$ ($\pm 1$ segundos) & Minutos ($\pm 0.01$)  \\ \hline \hline
-        10 000 00 & 1000 & 7 & 0.11 \\ \hline
-        4 000 000 & 1000 & 32 & 0.53 \\ \hline  
-        9 000 000 & 1000 & 71 & 1.18 \\ \hline
-        16 000 000 & 1000 & 126 & 2.10 \\ \hline
-        25 000 000 & 1000 & 204 & 3.17 \\ \hline
+    Densidad de puntos &  $t_\text{CPU}$ ($\SI{}{\second}$)  & $t_\text{GPU}$ ($\SI{}{\second}$) &  ($t_\text{GPU}$/$t_\text{CPU}$)  \\ \hline \hline
+     $10^6$ & 7.67 $\pm$ 0.04         & 0.640 $\pm$ 0.002 & 11.98 $\pm$ 0.07\\ \hline
+     $4\cdot 10^6$ & 35.36 $\pm$ 0.23 & 2.447 $\pm$ 0.016 & 14.44 $\pm$ 0.13\\ \hline
+     $9\cdot 10^6$ & 72.3 $\pm$ 0.3   & 5.582 $\pm$ 0.021   & 12.96 $\pm$ 0.07\\ \hline
+     $16\cdot 10^6$ & 126.3 $\pm$ 0.5 & 9.81 $\pm$ 0.03   & 12.88 $\pm$ 0.06\\ \hline
+     $25\cdot 10^6$ & 209.1 $\pm$ 1.4 & 16.397 $\pm$ 0.23 & 12.75 $\pm$ 0.09\\ \hline
     \end{tabular}
-    \caption{Dependencia del tiempo de cálculo con la densidad de puntos utilizados en CPU}
-    \label{tab:densidad_de_puntos_CPU}
+    \caption{Datos obtenidos tras medir la dependencia del tiempo de cálculo con la densidad de puntos en CPU y GPU además de calcular el aumento de velocidad al usar CUDA.}
+    \label{tab:t_densidad_de_punto}
 \end{table}
 
 
+Al igual que el apartdo anterior, al aumentar la densidad de punto haciendo el problema un número x de veces más grande cabe esperar algún tipo de tendencia en el tiempo de cálculo para ambos algoritmos, siendo esta tendencia menos pronunciada en el algoritmo CUDA. Para determinar este comportamiento, en la figura \ref{fig:t-densidad_de_puntos} se han representado los datos obtenidos en la tabla \ref{tab:t_densidad_de_punto}. En ella se ha realizado una regresión lineal para las dos series de valores (CPU y GPU), deduciendo que los valores se ajustan a una recta al obtener un valor de $R^2$ de 0.99 para ambas. 
 
-\begin{table}
-    \centering
-	\begin{tabular}{|c|c|c|c|}
-    \hline
-    \multicolumn{4}{ |c| }{CPU} \\ \hline
-         Densidad de puntos & Pasos Temporales &  $t_{GPU}$ ($\pm 1$ segundos) & Minutos ($\pm 0.01$)  \\ \hline \hline
-        1 000 000 & 1000 & 0 & 0.0 \\ \hline
-        4 000 000 & 1000 & 2 & 0.03 \\ \hline  
-        9 000 000 & 1000 & 6 & 0.10 \\ \hline
-        16 000 000 & 1000 & 10 & 0.17 \\ \hline
-        25 000 000  & 1000 & 16 & 0.27 \\ \hline
-    \end{tabular}
-    \caption{Dependencia del tiempo de cálculo con la densidad de puntos utilizados en GPU}
-    \label{tab:densidad_de_puntos_GPU}
-\end{table}
+Como es de esperar se obtiene un valor de pendiente mayor para el algoritmo implementado en la CPU, 8.2 $\pm 0.2 \cdot 10^{-6}$, que el calculado en el algoritmo implementado en GPU, 6.52 $\pm 0.16 \cdot 10^{-7}$. No obstante, esta diferencia no es tan acusada como la determinada en la sección \ref{Subsection:Variacion pasos temporales}, donde la calculada para GPU era de un orden de diferencia menor.
 
-Como podemos ver en las tablas el tiempo de ejecución crece significativamente al aumentar la densidad de puntos utilizada en la implementación del host. No obstante, al utilizar la paralelización ofrecida por CUDA el aumento en tiempo de cómputo es menos abrupto.
-
-Esta diferencia podemos verla de forma más clara en la figura \ref{fig:t-densidad_de_puntos}, en ella vemos el aumento en tiempo de ejecución del algoritmo ejecutado en el host en azul y el aumento en tiempo de ejecución del algoritmo implementado en el device en naranja.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=15 cm]{T-Densidad_de_Puntos.jpg}				
-\caption{Relación entre el tiempo de cálculo y la densidad de puntos para 1000 pasos temporales. La línea naranja representa el tiempo de ejecución en el device y la azul el tiempo de ejecución en el host}
+\caption{Relación entre el tiempo de cálculo y la densidad de puntos para 1000 pasos temporales. La línea naranja representa el tiempo de ejecución en el device y la azul el tiempo de ejecución en el host. En ambas series de datos se ha representado la recta obtenida tras hacer una regresión lineal. Los valores de las pendientes obtenidos son 8.2 $\pm 0.2 \cdot 10^{-6}$ para la CPU y 6.52 $\pm 0.16 \cdot 10^{-7}$ para la GPU.}
 \label{fig:t-densidad_de_puntos}
 \end{figure}
 \noindent
 
-sadfa
 
 
 
@@ -654,6 +591,78 @@ sadfa
 
 \section{Conclusiones}
 
+
+
+\appendix
+\section{Datos y errores}\label{aped.A}
+\subsection{Errores}
+Para la propagación de errores se ha utilizado la expresión:
+
+\begin{equation}
+    \Delta f(a_i)=\sqrt{\sum_{i=1}^n (\frac{\delta f(a_i)}{\delta a_i} \cdot \Delta a_i)^2}
+\end{equation}
+
+\subsection{Datos}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|r|c|c|c|}
+    \hline
+        \multicolumn{4}{ |c| }{CPU} \\ \hline
+    Pasos Temporales &  $t_\text{CPU}$ ($\pm \SI{0.001}{\second}$) & $t_\text{CPU}$ ($\pm \SI{0.001}{\second}$) &  $t_\text{CPU}$  ($\pm \SI{0.001}{\second}$)\\ \hline \hline
+     10    & 1.964 & 1.965 & 1.983  \\ \hline
+     100   & 19.270 & 19.300 & 19.400  \\ \hline
+     1000  & 209.483 & 210.762 & 206.966  \\ \hline
+     10000 & 2169.530 & 2139.410 & 2139.820  \\ \hline
+    \end{tabular}
+    \caption{Ejecución en CPU con una densidad de puntos de 25 millones}
+\end{table}
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|r|c|c|c|}
+    \hline
+        \multicolumn{4}{ |c| }{GPU} \\ \hline
+    Pasos Temporales &  $t_\text{GPU}$ ($\pm \SI{0.001}{\second}$) & $t_\text{GPU}$ ($\pm \SI{0.001}{\second}$) &  $t_\text{GPU}$  ($\pm \SI{0.001}{\second}$)\\ \hline \hline
+     10    & 0.165   & 0.167 & 0.164  \\ \hline
+     100   & 1.638  & 1.632 & 1.630  \\ \hline
+     1000  & 16.388 & 16.431 & 16.371  \\ \hline
+     10000 & 168.697 & 167.173 & 169.841  \\ \hline
+    \end{tabular}
+    \caption{Ejecución en GPU con una densidad de puntos de 25 millones}
+\end{table}
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|r|c|c|c|}
+    \hline
+        \multicolumn{4}{ |c| }{CPU} \\ \hline
+    Densidad de puntos &  $t_\text{GPU}$ ($\pm \SI{0.001}{\second}$) & $t_\text{GPU}$ ($\pm \SI{0.001}{\second}$) &  $t_\text{GPU}$  ($\pm \SI{0.001}{\second}$)\\ \hline \hline
+     $10^6 $         & 7.729   & 7.612 & 7.675  \\ \hline
+     $4\cdot 10^6$   & 35.557  & 35.019 & 35.500  \\ \hline
+     $9\cdot 10^6$   & 71.978 & 72.406 & 72.770  \\ \hline
+     $16\cdot 10^6$  & 126.000 & 126.994 & 125.917  \\ \hline
+     $25\cdot 10^6$  & 209.483 & 210.762 & 206.996  \\ \hline
+    \end{tabular}
+    \caption{Ejecución en CPU para un número de pasos de 1000}
+\end{table}
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|r|c|c|c|}
+    \hline
+        \multicolumn{4}{ |c| }{GPU} \\ \hline
+    Densidad de puntos &  $t_\text{GPU}$ ($\pm \SI{0.001}{\second}$) & $t_\text{GPU}$ ($\pm \SI{0.001}{\second}$) &  $t_\text{GPU}$  ($\pm \SI{0.001}{\second}$)\\ \hline \hline
+     $10^6 $         & 0.638   & 0.643 & 0.639  \\ \hline
+     $4\cdot 10^6$   & 2.438  & 2.471 & 2.432  \\ \hline
+     $9\cdot 10^6$   & 5.573 & 5.560 & 5.614  \\ \hline
+     $16\cdot 10^6$  & 9.853 & 9.779 & 9.785  \\ \hline
+     $25\cdot 10^6$  & 16.388 & 16.431 & 16.371  \\ \hline
+    \end{tabular}
+    \caption{Ejecución en GPU para un número de pasos de 1000}
+\end{table}
 
 
 % Referencias %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -669,10 +678,10 @@ sadfa
   {\em Electromagnetic simulation using the FDTD method with Python}, \\
   IEEE PRESS WILEY, 2020.
   
-\bibitem{Taflove2005}
-Allen Taflove and Susan C~Hagness, \\
-{\em Computational electrodynamics. The Finite-Difference Time-Domain Method}, \\
-ARTECH HOUSE, 2005.
+  \bibitem{Taflove2005}
+  Allen Taflove and Susan C~Hagness, \\
+  {\em Computational electrodynamics. The Finite-Difference Time-Domain Method}, \\
+  ARTECH HOUSE, 2005.
 
 \bibitem{web}
  Nvidia documentation, \\
@@ -716,4 +725,8 @@ ARTECH HOUSE, 2005.
  
 \end{thebibliography}
 
+
+
 \end{document}
+
+
