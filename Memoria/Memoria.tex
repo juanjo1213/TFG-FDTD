@@ -556,7 +556,7 @@ Es de interés destacar la diferencia en las pendientes de ambas regresiones, si
 
 Para determinar la dependencia del tiempo  de cálculo de los algoritmos con la densidad de puntos utilizada, también se han realizado varias ejecuciones tanto en host como en device. En todas ellas se ha mantenido constante el número de pasos temporales, 1000 y se ha variado la densidad de puntos desde $10^6$ hasta $25\cdot 10^6$. No se han escogido valores equiespaciados de la densidad de puntos para la recolección de datos por la condición mencionada en la sección \ref{section:metodo_diferencias_finitas}, donde escogimos $\Delta x=\Delta y$ para así facilitar el desarrollo de las expresiones. En la tabla \ref{tab:t_densidad_de_punto} se recogen los datos obtenidos dividos en columnas, al igual que en el apartado anterior, se han utilizado las letras  $t_\text{CPU}$ y  $t_\text{GPU}$ para nombrar a los tiempos de cálculo de host y device respectivamente. 
 
-En la última columna también se recoge el aumento en velocidad de cálculo (speed up), siendo en este caso la media de los valores de 13 $\pm$ 0.9, lo que nos indica que obtenemos una solución en GPU 13 veces más rápido que en CPU.
+En la última columna también se recoge el aumento en velocidad de cálculo (speed up), siendo en este caso la media de los valores de 13.0 $\pm$ 0.9, lo que nos indica que obtenemos una solución en GPU 13 veces más rápido que en CPU.
 
 \begin{table}[h]
     \centering
@@ -610,7 +610,7 @@ Estos resultados son una muestra de las ventajas de aprender a utilizar la paral
 Para la propagación de errores se ha utilizado la expresión:
 
 \begin{equation}
-    \Delta f(a_i)=\sqrt{\sum_{i=1}^n (\frac{\delta f(a_i)}{\delta a_i} \cdot \Delta a_i)^2}
+    \Delta f(a_i)=\sqrt{\sum_{i=1}^n (\frac{\partial f(a_i)}{\partial a_i} \cdot \Delta a_i)^2}
 \end{equation}
 
 \subsection{Datos}
