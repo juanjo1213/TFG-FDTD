@@ -511,13 +511,13 @@ Al resolver las ecuaciones \ref{eq:actualizacion-campos} obtenemos una onda elec
 \end{figure}
 \noindent
 
-Para determinar el aumento de velocidad en tiempo de cálculo al implementar este algoritmo en CUDA se han realizado dos experimenteos donde se determina su dependencia con el número de pasos temporales y la densidad de puntos. En ambos se han realizado una serie de ejecuciones para cada tiempo a determinar, de las cuales se han calculado el porcentaje de dispersión, la media y se ha elegido el error del resultado como el máximo entre la sensibilidad de la medida y la desviación de la media.
+Para determinar el aumento de velocidad en tiempo de cálculo al implementar este algoritmo en GPU se han realizado dos experimenteos donde se determina su dependencia con el número de pasos temporales y la densidad de puntos. En ambos se han realizado una serie de ejecuciones para cada tiempo a determinar, de las cuales se han calculado el porcentaje de dispersión, la media y se ha elegido el error del resultado como el máximo entre la sensibilidad de la medida y la desviación de la media.
 
 \subsection{Dependencia del tiempo de cálculo con el número de pasos temporales} \label{Subsection:Variacion pasos temporales}
 
 Para determinar la dependencia del tiempo de cálculo con el número de pasos temporales se han llevado a cabo varias ejecuciones en host y device. En estas se ha utilizado una densidad constante de puntos de 25 millones y se han variado los pasos temporales desde 10 hasta 10 000 realizando un mínimo de tres medidas para cada valor de pasos temporales en cada algoritmo. En la tabla  \ref{tab:npasos} se enumeran los datos obtenidos en las ejecuciones realizadas, en ella se ha nombrado al tiempo de ejecución en CPU como $t_\text{CPU}$ y el tiempo de ejecución en el device como $t_\text{GPU}$. En la última columna se ha calculado el llamado aumento de velocidad (speed up) para determinar la mejora en tiempo de ejecución de una tecnología a otra.
 
-Como podemos ver en la tabla, haciendo la media de los valores calculados, obtenemos una mejora en la velocidad de ejecución (speed up) de aproximadamente 12.31x. Esto nos indica que el algoritmo CUDA nos ofrece una solución en 12.31 menos tiempo que la solución en CPU.
+Como podemos ver en la tabla, haciendo la media de los valores calculados, obtenemos una mejora en la velocidad de ejecución (speed up) de aproximadamente 12.31 $\pm$ 0.5. Esto nos indica que el algoritmo desarrollado en GPU nos ofrece una solución con un aumento del 12.31 en la velocidad de cálculo que la solución en CPU.
 
 \begin{table}[h]
     \centering
@@ -536,7 +536,7 @@ Como podemos ver en la tabla, haciendo la media de los valores calculados, obten
 
 Al escoger un aumento lineal del número de pasos temporales cabe esperar que el aumento del tiempo de cálculo también sea lineal, ya que en ambos se ha empleado un bucle para realizar las funciones un número determinado de veces. No obstante, también es de esperar que en el device el tiempo de cálculo sea mucho menor debido a la paralelización aplicada, reduciendo el tiempo que se tarda en pasar de una sección del bucle a otra. Podemos comprobar estos resultados en la figura \ref{fig:t-pasos_temporales}, donde vemos un gráfico de los resultados obtenidos en la tabla \ref{tab:npasos}, representando en color azul los correspondientes al algoritmo ejecutado en el host y en color naranja los del device. En el gráfico se han representado las regresiones lineales obtenidas para las dos series de datos, siguiendo ambas una tendencia completamente lineal ya que en las dos se ha obtenido un valor del coeficiente $R^2$ de 0.99.
 
-Es de interés destacar la diferencia en las pendientes de ambas regresiones, siendo en la del host de 0.2152 $\pm$ 0.0003 $\SI{}{\second}$ y la del device de 0.01687 $\pm$ 3$\cdot 10^{-5}$ $\SI{}{\second}$, lo que nos indica, al ser la pendiente del host de un orden de magnitud mayor que la del device, un aumento mucho menor en el tiempo de cálculo al aumentar el número de pasos temporales utilizando CUDA que aplicando el algoritmo en la CPU.
+Es de interés destacar la diferencia en las pendientes de ambas regresiones, siendo en la del host de 0.2152 $\pm$ 0.0003 $\SI{}{\second}$ y la del device de 0.01687 $\pm$ 3$\cdot 10^{-5}$ $\SI{}{\second}$, lo que nos indica, al ser la pendiente del host de un orden de magnitud mayor que la del device, un aumento mucho menor en el tiempo de cálculo al aumentar el número de pasos temporales utilizando el host que aplicando el algoritmo en la CPU.
 
 
 \begin{figure}[h]
@@ -556,7 +556,7 @@ Es de interés destacar la diferencia en las pendientes de ambas regresiones, si
 
 Para determinar la dependencia del tiempo  de cálculo de los algoritmos con la densidad de puntos utilizada, también se han realizado varias ejecuciones tanto en host como en device. En todas ellas se ha mantenido constante el número de pasos temporales, 1000 y se ha variado la densidad de puntos desde $10^6$ hasta $25\cdot 10^6$. No se han escogido valores equiespaciados de la densidad de puntos para la recolección de datos por la condición mencionada en la sección \ref{section:metodo_diferencias_finitas}, donde escogimos $\Delta x=\Delta y$ para así facilitar el desarrollo de las expresiones. En la tabla \ref{tab:t_densidad_de_punto} se recogen los datos obtenidos dividos en columnas, al igual que en el apartado anterior, se han utilizado las letras  $t_\text{CPU}$ y  $t_\text{GPU}$ para nombrar a los tiempos de cálculo de host y device respectivamente. 
 
-En la última columna también se recoge el aumento en velocidad de cálculo (speed up), siendo en este caso la media de los valores de aproximadamente 13x, lo que nos indica que obtenemos una solución en CUDA 13 veces más rápido que en CPU.
+En la última columna también se recoge el aumento en velocidad de cálculo (speed up), siendo en este caso la media de los valores de 13 $\pm$ 0.9, lo que nos indica que obtenemos una solución en GPU 13 veces más rápido que en CPU.
 
 \begin{table}[h]
     \centering
@@ -569,12 +569,12 @@ En la última columna también se recoge el aumento en velocidad de cálculo (sp
      $16\cdot 10^6$ & 126.3 $\pm$ 0.5 & 9.81 $\pm$ 0.03   & 12.88 $\pm$ 0.06\\ \hline
      $25\cdot 10^6$ & 209.1 $\pm$ 1.4 & 16.397 $\pm$ 0.23 & 12.75 $\pm$ 0.09\\ \hline
     \end{tabular}
-    \caption{Datos obtenidos tras medir la dependencia del tiempo de cálculo con la densidad de puntos en CPU y GPU además de calcular el aumento de velocidad al usar CUDA.}
+    \caption{Datos obtenidos tras medir la dependencia del tiempo de cálculo con la densidad de puntos en CPU y GPU además de calcular el aumento de velocidad al usar la GPU.}
     \label{tab:t_densidad_de_punto}
 \end{table}
 
 
-Al igual que el apartado anterior, al aumentar la densidad de punto haciendo el problema un número x de veces más grande cabe esperar algún tipo de tendencia en el tiempo de cálculo para ambos algoritmos, siendo esta tendencia menos pronunciada en el algoritmo CUDA. Para determinar este comportamiento, en la figura \ref{fig:t-densidad_de_puntos} se han representado los datos obtenidos en la tabla \ref{tab:t_densidad_de_punto}. En ella se ha realizado una regresión lineal para las dos series de valores (CPU y GPU), deduciendo que los valores se ajustan a una recta al obtener un valor de $R^2$ de 0.99 para ambas. 
+Al igual que el apartado anterior, al aumentar la densidad de punto haciendo el problema un número x de veces más grande cabe esperar algún tipo de tendencia en el tiempo de cálculo para ambos algoritmos, siendo esta tendencia menos pronunciada en el algoritmo CUDA aplicado en GPU. Para determinar este comportamiento, en la figura \ref{fig:t-densidad_de_puntos} se han representado los datos obtenidos en la tabla \ref{tab:t_densidad_de_punto}. En ella se ha realizado una regresión lineal para las dos series de valores (CPU y GPU), deduciendo que los valores se ajustan a una recta al obtener un valor de $R^2$ de 0.99 para ambas. 
 
 Como es de esperar, se obtiene un valor de pendiente mayor para el algoritmo implementado en la CPU, 8.2 $\pm 0.2 \cdot 10^{-6}$, que el calculado en el algoritmo implementado en GPU, 6.52 $\pm 0.16 \cdot 10^{-7}$. No obstante, esta diferencia no es tan acusada como la determinada en la sección \ref{Subsection:Variacion pasos temporales}, donde la calculada para GPU era de un orden de diferencia menor.
 
