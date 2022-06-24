@@ -59,9 +59,6 @@ __global__ void FD2D(FDTDData* field, int xdim, int ydim, int ts)
 	int col = blockIdx.x * blockDim.x + threadIdx.x;
 
 
-
-
-
 	int ic = int(xdim / 2),
 		jc = int(ydim / 2);
 
@@ -106,8 +103,8 @@ __global__ void FD2D(FDTDData* field, int xdim, int ydim, int ts)
 
 int main(void)
 {
-	int dimx = 1000,
-		dimy = 1000,
+	int dimx = 60,
+		dimy = 60,
 		dimension = dimx * dimy,
 		FDTDDatasize = sizeof(FDTDData),
 		datanumbytes = dimension * FDTDDatasize;
@@ -125,18 +122,36 @@ int main(void)
 	cudaMemcpy(dev_field, hst_field, datanumbytes, cudaMemcpyHostToDevice);
 	check_CUDA_Error("Error in statement 2");
 
-	dim3 blocks(32, 32);
-	dim3 threads(32, 32);
-	int nsteps = 1000;
+	dim3 blocks(6, 6);
+	dim3 threads(25, 25);
+	int nsteps = 50;
 
+	// Time recording
+	cudaEvent_t start;
+	cudaEvent_t stop;
+
+	cudaEventCreate(&start);
+	cudaEventCreate(&stop);
+	cudaEventRecord(start, 0);
+
+	//Main loop
 	for (int time_step = 1;time_step < nsteps + 1;time_step++)
 	{
-		FD2D << <blocks, threads>> > (dev_field, dimx, dimy, time_step);
+		FD2D << <blocks, threads >> > (dev_field, dimx, dimy, time_step);
 		check_CUDA_Error("Error in statement 3");
 	}
 
+	cudaEventRecord(stop, 0);
+	cudaEventSynchronize(stop);
+
 	cudaMemcpy(hst_field, dev_field, datanumbytes, cudaMemcpyDeviceToHost);
 	check_CUDA_Error("error 1");
+
+	// Time calculus
+	float elapsedTime;
+	cudaEventElapsedTime(&elapsedTime, start, stop);
+	cout << elapsedTime;
+
 
 	//Matrix writing 
 	ofstream ez;
